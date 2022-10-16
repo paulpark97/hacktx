@@ -33,7 +33,7 @@ const R3F = () => {
                     pieceId={`${i}-${j}-${k}`}
                     position={[(i - 3 / 2) * 7, 0, (k - 3 / 2) * 7]}
                     depth={Math.ceil(Math.random() * 3) * 2}
-                    width={Math.ceil(Math.random() * 3) * 2}
+                    width={Math.ceil(Math.random() * 3) * 2 - 1}
                     color={`#${Math.floor(Math.random() * 16700000).toString(16).padStart(6, '0')}`}
                 />)
             }

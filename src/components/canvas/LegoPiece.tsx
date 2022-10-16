@@ -52,11 +52,12 @@ export const LegoPiece = (props: LegoPieceProps) => {
     const aspect = size.width / viewport.width;
 
     const [rotation, setRotation] = useState<number>(0);
+    const [scale, setScale] = useState<number>(1);
 
     useEffect(() => {
         // const heldKeys = new Set<string>();
         function onKeyDown(e: KeyboardEvent) {
-            if (!props.selected || !mesh.current ) { // || heldKeys.has(e.key)
+            if (!props.selected || !mesh.current) { // || heldKeys.has(e.key)
                 return
             }
             // heldKeys.add(e.key);
@@ -83,6 +84,21 @@ export const LegoPiece = (props: LegoPieceProps) => {
             // document.removeEventListener('keyup', onKeyUp);
         }
     });
+
+    useEffect(() => {
+        if (!props.selected) {
+            setScale(1);
+            return
+        }
+        const timeout = setInterval(() => {
+            if (scale === 1) {
+                setScale(0.95)
+            } else {
+                setScale(1)
+            }
+        }, 300)
+        return () => clearInterval(timeout)
+    })
 
     // This reference will give us direct access to the mesh
     const mesh = useRef<Mesh>(null!);
@@ -130,6 +146,7 @@ export const LegoPiece = (props: LegoPieceProps) => {
         <mesh
             ref={mesh}
             position={position}
+            scale={[scale, scale, scale]}
             rotation={[0, rotation, 0]}
             // BUGGY {...bind() as fucking_any}
             onClick={({ object }) => {
@@ -154,7 +171,7 @@ interface LegoConnectorProps {
 
 const LegoConnector = (props: LegoConnectorProps) => {
     const material = <meshStandardMaterial
-        color={props.selected ? SelectedMaterialColor : (props.color ?? DefaultMaterialColor)}
+        color={props.color ?? DefaultMaterialColor}
         flatShading={true}
     />;
 
