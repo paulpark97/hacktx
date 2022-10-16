@@ -26,7 +26,10 @@ const R3F = () => {
         <CanvasLayout>
             <ambientLight />
             <pointLight position={[100, 100, 100]} />
-            <LegoPiece depth={100} width={100} />
+            <LegoPiece depth={1} width={1} />
+            <LegoPiece position={[5,0,0]} depth={3} width={1} />
+            <LegoPiece position={[0,0,5]} depth={1} width={3} />
+            <LegoPiece position={[5,0,5]} depth={3} width={3} />
         </CanvasLayout>
     );
 };

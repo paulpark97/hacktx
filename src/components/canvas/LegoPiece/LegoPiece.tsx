@@ -1,39 +1,18 @@
+import { Vector3 } from '@react-three/fiber';
 import React, { useRef, useState } from "react";
-import { useFrame, extend } from "@react-three/fiber";
 import type { Mesh } from "three";
-// import { shaderMaterial } from "@react-three/drei";
-// import * as THREE from "three";
-
-// /* @ts-ignore */
-// import vertex from "../shaders/glsl/vertex.glsl";
-// /* @ts-ignore */
-// import frag from "../shaders/glsl/frag.glsl";
-
-// const ColorShiftMaterial = shaderMaterial(
-//     {
-//         time: 0,
-//         color: new THREE.Color(0.05, 0.0, 0.025),
-//     },
-//     vertex,
-//     frag
-// );
-
-// // This is the 🔑 that HMR will renew if this file is edited
-// // It works for THREE.ShaderMaterial as well as for drei/shaderMaterial
-// // @ts-ignore
-// ColorShiftMaterial.key = THREE.MathUtils.generateUUID();
-
-// extend({ ColorShiftMaterial });
 
 interface LegoPieceProps {
     color?: string;
     depth: number;
     width: number;
+    position?: Vector3;
 }
 
 const LegoPiece = (props: LegoPieceProps) => {
     const { depth, width } = props;
     const color = props.color ?? '#4287f5';
+    const position = props.position ?? [0, 0, 0];
     // This reference will give us direct access to the mesh
     const mesh = useRef<Mesh>(null!);
 
@@ -52,7 +31,7 @@ const LegoPiece = (props: LegoPieceProps) => {
     for (let i = 0; i < width; i++) {
         for (let j = 0; j < depth; j++) {
             cylinders.push(
-                <mesh position={[i * 1 + 0.5 - width / 2, 0.5, j * 1 + 0.5 - depth / 2]}>
+                <mesh position={[i * 1 + 0.5 - width / 2, 0.7, j * 1 + 0.5 - depth / 2]}>
                     {cylinderGeometry}
                     {material}
                 </mesh>
@@ -63,7 +42,7 @@ const LegoPiece = (props: LegoPieceProps) => {
     return (
         <mesh
             ref={mesh}
-            position={[0, 0, 0]}
+            position={position}
             onClick={(event) => setActive(!active)}
         >
             <boxBufferGeometry args={[width, 1, depth]} />
