@@ -57,8 +57,8 @@
 
 			this.render = function ( scene, camera ) {
 
-				if ( scene.matrixWorldAutoUpdate === true ) scene.updateMatrixWorld();
-				if ( camera.parent === null && camera.matrixWorldAutoUpdate === true ) camera.updateMatrixWorld();
+				scene.updateMatrixWorld();
+				if ( camera.parent === null ) camera.updateMatrixWorld();
 				camera.matrixWorld.decompose( _position, _quaternion, _scale ); // front
 
 				_cameraF.position.copy( _position );
