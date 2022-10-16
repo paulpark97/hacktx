@@ -1,32 +1,45 @@
 import { ReactNode, useEffect, useRef } from "react";
-import { Preload, OrbitControls } from "@react-three/drei";
+import { Preload, OrbitControls, PointerLockControls } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import useStore from "../../../hooks/store";
+import * as THREE from 'three';
+import { usePressedKeys } from "../../canvas/usePressedKeys";
 
 interface CanvasLayoutProps {
     children: ReactNode;
 }
 
+const pressedKeys = new Set<string>(); // I hate it here
 const Controls = () => {
     const dom = useStore((state) => state.dom);
     const control = useRef(null);
+    const pressedKeys = usePressedKeys();
 
     useEffect(() => {
         if (control) {
             dom.current.style["touch-action"] = "none";
         }
     }, [dom, control]);
-    // @ts-ignore
-    return <OrbitControls
+
+    useFrame(({ camera }) => {
+        const Handlers: Record<string, (() => void) | undefined> = {
+            'w': () => camera.translateZ(-0.4),
+            's': () => camera.translateZ(0.4),
+            'a': () => camera.translateX(-0.4),
+            'd': () => camera.translateX(0.4),
+            'e': () => camera.translateY(0.4),
+            'q': () => camera.translateY(-0.4),
+        }
+        for (const key of pressedKeys) {
+            Handlers[key.toLowerCase()]?.();
+        }
+        console.log('duck', pressedKeys)
+    })
+
+    return <PointerLockControls
         domElement={dom.current}
-        enableDamping={false}
-        keys={{
-            LEFT: 'ArrowLeft', //left arrow
-            UP: 'ArrowUp', // up arrow
-            RIGHT: 'ArrowRight', // right arrow
-            BOTTOM: 'ArrowDown' // down arrow
-        }}
+        ref={control}
     />;
 };
 
@@ -42,17 +55,11 @@ const CanvasLayout = ({ children }: CanvasLayoutProps) => {
                 // color from blender world theme
                 backgroundColor: "rgb(50,50,50)",
             }}
-            // Uncomment when using
-            // depth texture in shaders
-            // camera={{
-            //     position: [0, 0, 4],
-            //     near: 0.1,
-            //     far: 100,
-            // }}
+            camera={{
+                position: [0, 10, 10],
+            }}
             /* @ts-ignore */
             onCreated={(state) => state.events.connect(dom.current)}
-        // Note: connect to dom so, from what i know, you can still use orbitControls and other features in the future without next canvas within a main dom div
-        // Delete above when ready for own project
         >
             <Preload all />
             <Controls />
